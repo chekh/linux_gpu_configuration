@@ -18,13 +18,13 @@ python3 -m pip install --upgrade pip
 ./install_python.sh
 ./install_cuda.sh
 ./install_cudnn.sh
-./install_jupyter.sh
-./install_samba.sh
-./install_ssh.sh
-./install_vnc.sh
-./install_rdp.sh
-./install_git.sh
-./install_docker.sh
-./install_ray.sh
+#./install_jupyter.sh
+#./install_samba.sh
+#./install_ssh.sh
+#./install_vnc.sh
+#./install_rdp.sh
+#./install_git.sh
+#./install_docker.sh
+#./install_ray.sh
 
 echo "Setup completed!"
