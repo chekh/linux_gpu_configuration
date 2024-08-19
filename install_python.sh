@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Load environment variables from the configuration file
+set -a
+source ./config.env
+set +a
+
 # Install Python if specified in the config
 if [ "$PYTHON_INSTALL" == "true" ]; then
   echo "Installing Python $PYTHON_VERSION..."
@@ -29,3 +34,5 @@ if [ "$PYTHON_INSTALL" == "true" ]; then
   echo "Reloading .bashrc..."
   source ~/.bashrc
 fi
+
+echo "Python installation completed."
