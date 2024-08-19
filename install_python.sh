@@ -5,21 +5,26 @@ set -a
 source ./config.env
 set +a
 
-# Install Python if specified in the config
+# Install Python 3.11 if specified in the config
 if [ "$PYTHON_INSTALL" == "true" ]; then
   echo "Installing Python $PYTHON_VERSION..."
 
-  # Install Python 3.11
+  # Add deadsnakes PPA to get Python 3.11
+  sudo add-apt-repository ppa:deadsnakes/ppa -y
   sudo apt-get update
+
+  # Install Python 3.11
   sudo apt-get install -y python$PYTHON_VERSION python$PYTHON_VERSION-dev python$PYTHON_VERSION-venv
 
   # Update alternatives to set Python 3.11 as the default Python
-  sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python$PYTHON_VERSION 1
-  sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-  sudo update-alternatives --config python3 <<< "1"  # Выбор установленной версии как основной
-  sudo update-alternatives --config python <<< "1"   # Выбор установленной версии как основной
+  sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python$PYTHON_VERSION 2
+  sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 2
 
-  # Проверка успешности обновления
+  # Manually set Python 3.11 as the default
+  sudo update-alternatives --set python3 /usr/bin/python$PYTHON_VERSION
+  sudo update-alternatives --set python /usr/bin/python3
+
+  # Verify the change
   PYTHON_CURRENT_VERSION=$(python3 --version | awk '{print $2}')
   echo "Current default Python version is $PYTHON_CURRENT_VERSION"
 
@@ -34,5 +39,3 @@ if [ "$PYTHON_INSTALL" == "true" ]; then
   echo "Reloading .bashrc..."
   source ~/.bashrc
 fi
-
-echo "Python installation completed."

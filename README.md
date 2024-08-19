@@ -1,6 +1,6 @@
 # System Setup Automation Script
 
-This repository contains a bash script for automating the setup of a Linux-based system with various tools and services, including Python, Docker, Ray, CUDA, cuDNN, Jupyter, Samba, SSH, VNC, RDP, and more. The configuration is controlled via a `.env` file.
+This repository contains a bash scripts for automating the setup of a Linux-based system with various tools and services, including Python, Docker, Ray, CUDA, cuDNN, Jupyter, Samba, SSH, VNC, RDP, and more. The configuration is controlled via a `.env` file.
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ Edit the `config.env` file to match your system's requirements. Set `true` or `f
 
 ```ini
 PYTHON_INSTALL=true
-PYTHON_VERSION="3.11.9"
+PYTHON_VERSION="3.11"
 DOCKER_INSTALL=true
 RAY_INSTALL=true
 ```

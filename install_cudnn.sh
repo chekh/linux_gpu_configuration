@@ -1,18 +1,27 @@
 #!/bin/bash
 
+# Load environment variables from the configuration file
+set -a
+source ./config.env
+set +a
+
 # Install cuDNN if specified in the config
 if [ "$CUDNN_INSTALL" == "true" ]; then
-  echo "Installing cuDNN $CUDNN_VERSION..."
+  echo "Installing cuDNN on Ubuntu $TARGET_VERSION..."
 
-  # Add NVIDIA cuDNN repositories
-  wget https://developer.download.nvidia.com/compute/machine-learning/repos/${DISTRIBUTION}${TARGET_VERSION}/${TARGET_ARCH}/cudnn-keyring.gpg
-  sudo mv cudnn-keyring.gpg /etc/apt/keyrings/cudnn-archive-keyring.gpg
-  echo "deb [signed-by=/etc/apt/keyrings/cudnn-archive-keyring.gpg] https://developer.download.nvidia.com/compute/machine-learning/repos/${DISTRIBUTION}${TARGET_VERSION}/${TARGET_ARCH}/ /" | sudo tee /etc/apt/sources.list.d/cudnn.list
+  # Download the CUDA keyring package
+  wget https://developer.download.nvidia.com/compute/cuda/repos/$DISTRO/$TARGET_ARCH/cuda-keyring_1.1-1_all.deb
 
-  # Update the package lists
+  # Install the keyring package
+  sudo dpkg -i cuda-keyring_1.1-1_all.deb
+
+  # Update the package list
   sudo apt-get update
 
   # Install cuDNN
-  sudo apt-get install -y libcudnn8=${CUDNN_VERSION}
-  sudo apt-get install -y libcudnn8-dev=${CUDNN_VERSION}
+  sudo apt-get -y install cudnn
+
+  # Verify the installation
+  echo "Verifying cuDNN installation..."
+  dpkg -l | grep cudnn
 fi
