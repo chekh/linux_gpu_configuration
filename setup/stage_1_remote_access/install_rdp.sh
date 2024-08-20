@@ -5,32 +5,36 @@ set -a
 source ./config.env
 set +a
 
+# Ensure necessary packages are installed
+sudo apt-get update
+sudo apt-get install -y xrdp
+
 # Clear previous window manager if the flag is set
 ./clear_windows_manager.sh
 
-# Install RDP if specified in the config
+# Install and configure the chosen window manager
 if [ "$RDP_ENABLE" == "true" ]; then
   echo "Setting up RDP with $WINDOW_MANAGER..."
 
   # Install the chosen window manager if not already installed
   case "$WINDOW_MANAGER" in
     xfce)
-      sudo apt-get install -y xfce4 xrdp
+      sudo apt-get install -y xfce4 xfce4-goodies
       ;;
     gnome)
-      sudo apt-get install -y ubuntu-desktop xrdp
+      sudo apt-get install -y ubuntu-desktop
       ;;
     kde)
-      sudo apt-get install -y kde-plasma-desktop xrdp
+      sudo apt-get install -y kde-plasma-desktop
       ;;
     cinnamon)
-      sudo apt-get install -y cinnamon-desktop-environment xrdp
+      sudo apt-get install -y cinnamon-desktop-environment
       ;;
     mate)
-      sudo apt-get install -y mate-desktop-environment xrdp
+      sudo apt-get install -y mate-desktop-environment
       ;;
     mint)
-      sudo apt-get install -y mint-meta-cinnamon xrdp  # Or mint-meta-mate if you prefer MATE
+      sudo apt-get install -y mint-meta-cinnamon  # Or mint-meta-mate if you prefer MATE
       ;;
     *)
       echo "Unsupported window manager: $WINDOW_MANAGER"
@@ -62,4 +66,6 @@ if [ "$RDP_ENABLE" == "true" ]; then
   esac
 
   echo "RDP setup with $WINDOW_MANAGER completed."
+else
+  echo "RDP is not enabled in the configuration."
 fi

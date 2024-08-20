@@ -5,32 +5,36 @@ set -a
 source ./config.env
 set +a
 
+# Ensure necessary packages are installed
+sudo apt-get update
+sudo apt-get install -y tightvncserver expect
+
 # Clear previous window manager if the flag is set
 ./clear_windows_manager.sh
 
-# Install VNC if specified in the config
+# Install and configure the chosen window manager
 if [ "$VNC_ENABLE" == "true" ]; then
   echo "Setting up VNC with $WINDOW_MANAGER..."
 
   # Install the chosen window manager if not already installed
   case "$WINDOW_MANAGER" in
     xfce)
-      sudo apt-get install -y xfce4 xfce4-goodies tightvncserver
+      sudo apt-get install -y xfce4 xfce4-goodies
       ;;
     gnome)
-      sudo apt-get install -y ubuntu-desktop tightvncserver
+      sudo apt-get install -y ubuntu-desktop
       ;;
     kde)
-      sudo apt-get install -y kde-plasma-desktop tightvncserver
+      sudo apt-get install -y kde-plasma-desktop
       ;;
     cinnamon)
-      sudo apt-get install -y cinnamon-desktop-environment tightvncserver
+      sudo apt-get install -y cinnamon-desktop-environment
       ;;
     mate)
-      sudo apt-get install -y mate-desktop-environment tightvncserver
+      sudo apt-get install -y mate-desktop-environment
       ;;
     mint)
-      sudo apt-get install -y mint-meta-cinnamon tightvncserver  # Or mint-meta-mate if you prefer MATE
+      sudo apt-get install -y mint-meta-cinnamon  # Or mint-meta-mate if you prefer MATE
       ;;
     *)
       echo "Unsupported window manager: $WINDOW_MANAGER"
@@ -77,10 +81,17 @@ mate-session &" > ~/.vnc/xstartup
   esac
 
   chmod +x ~/.vnc/xstartup
+
+  # Set VNC password silently
+  ./setup_vnc_password.sh
+
+  # Start the VNC service for testing
   vncserver
 
   # Set up VNC as a systemd service
   ./setup_vnc_service.sh
 
   echo "VNC setup with $WINDOW_MANAGER completed."
+else
+  echo "VNC is not enabled in the configuration."
 fi
