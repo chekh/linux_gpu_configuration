@@ -7,16 +7,18 @@ set +a
 
 # Ensure necessary packages are installed
 sudo apt-get update
-sudo apt-get install -y tightvncserver expect
+sudo apt-get install -y tightvncserver expect xfce4 xfce4-goodies
+
+# Install missing font packages
+sudo apt-get install -y xfonts-75dpi xfonts-100dpi
 
 # Clear previous window manager if the flag is set
 ./clear_windows_manager.sh
 
-# Install and configure the chosen window manager
+# Install the chosen window manager if not already installed
 if [ "$VNC_ENABLE" == "true" ]; then
   echo "Setting up VNC with $WINDOW_MANAGER..."
 
-  # Install the chosen window manager if not already installed
   case "$WINDOW_MANAGER" in
     xfce)
       sudo apt-get install -y xfce4 xfce4-goodies
@@ -42,6 +44,11 @@ if [ "$VNC_ENABLE" == "true" ]; then
       ;;
   esac
 
+  # Create .Xresources if it doesn't exist
+  if [ ! -f "$HOME/.Xresources" ]; then
+    touch "$HOME/.Xresources"
+  fi
+
   # Start and configure VNC
   vncserver
   vncserver -kill :1
@@ -52,31 +59,41 @@ if [ "$VNC_ENABLE" == "true" ]; then
       mv ~/.vnc/xstartup ~/.vnc/xstartup.bak
       echo "#!/bin/bash
 xrdb \$HOME/.Xresources
-startxfce4 &" > ~/.vnc/xstartup
+if ! pgrep -x 'xfce4-session' > /dev/null; then
+  startxfce4 &
+fi" > ~/.vnc/xstartup
       ;;
     gnome)
       mv ~/.vnc/xstartup ~/.vnc/xstartup.bak
       echo "#!/bin/bash
 xrdb \$HOME/.Xresources
-gnome-session &" > ~/.vnc/xstartup
+if ! pgrep -x 'gnome-session' > /dev/null; then
+  gnome-session &
+fi" > ~/.vnc/xstartup
       ;;
     kde)
       mv ~/.vnc/xstartup ~/.vnc/xstartup.bak
       echo "#!/bin/bash
 xrdb \$HOME/.Xresources
-startplasma-x11 &" > ~/.vnc/xstartup
+if ! pgrep -x 'startplasma-x11' > /dev/null; then
+  startplasma-x11 &
+fi" > ~/.vnc/xstartup
       ;;
     cinnamon | mint)
       mv ~/.vnc/xstartup ~/.vnc/xstartup.bak
       echo "#!/bin/bash
 xrdb \$HOME/.Xresources
-cinnamon-session &" > ~/.vnc/xstartup
+if ! pgrep -x 'cinnamon-session' > /dev/null; then
+  cinnamon-session &
+fi" > ~/.vnc/xstartup
       ;;
     mate)
       mv ~/.vnc/xstartup ~/.vnc/xstartup.bak
       echo "#!/bin/bash
 xrdb \$HOME/.Xresources
-mate-session &" > ~/.vnc/xstartup
+if ! pgrep -x 'mate-session' > /dev/null; then
+  mate-session &
+fi" > ~/.vnc/xstartup
       ;;
   esac
 

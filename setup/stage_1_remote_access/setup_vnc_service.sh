@@ -20,7 +20,7 @@ Type=forking
 User='$USER'
 PAMName=login
 PIDFile=/home/'$USER'/.vnc/%H:%i.pid
-ExecStartPre=/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
+ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
 ExecStart=/usr/bin/vncserver -geometry 1280x800 -depth 24 -dpi 96 :%i
 ExecStop=/usr/bin/vncserver -kill :%i
 
