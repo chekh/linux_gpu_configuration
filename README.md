@@ -1,70 +1,212 @@
-# System Setup Automation Script
+# Linux GPU Configuration Project
 
-This repository contains a bash scripts for automating the setup of a Linux-based system with various tools and services, including Python, Docker, Ray, CUDA, cuDNN, Jupyter, Samba, SSH, VNC, RDP, and more. The configuration is controlled via a `.env` file.
+This project automates the setup and configuration of a Linux machine for GPU-intensive tasks, including remote access, GPU drivers, and software installations for development tools.
 
-## Prerequisites
+## Table of Contents
 
-- Ubuntu 20.04 or later
-- Basic knowledge of Linux command line
-- sudo privileges
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Configuration](#configuration)
+- [Stages Overview](#stages-overview)
+  - [Stage 1: Remote Access Configuration](#stage-1-remote-access-configuration)
+  - [Stage 2: System Setup](#stage-2-system-setup)
+  - [Stage 3: Development Tools Setup](#stage-3-development-tools-setup)
+- [How to Use](#how-to-use)
+  - [Running a Specific Stage](#running-a-specific-stage)
+  - [Checking Service Status](#checking-service-status)
+- [Uninstallation](#uninstallation)
+- [Service Management](#service-management)
+- [Reboot Management](#reboot-management)
+- [Conclusion](#conclusion)
 
-## Installation and Setup
+## Overview
 
-### 1. Clone the repository:
+This project is designed to automate the configuration of various system components essential for GPU-based computing on a Linux machine. The project is organized into three main stages, each addressing a specific aspect of system configuration. There is also a utilities section for handling reboots and other maintenance tasks.
 
-```bash
-git clone https://github.com/your-repo-name/system-setup.git
-cd system-setup
+## Project Structure
+
+```
+/setup/
+│
+├── stage_1_remote_access/
+│   ├── check_service_status.sh
+│   ├── clear_windows_manager.sh
+│   ├── config.env
+│   ├── install_firewall.sh
+│   ├── install_rdp.sh
+│   ├── install_samba.sh
+│   ├── install_ssh.sh
+│   ├── install_vnc.sh
+│   ├── manage_services.sh
+│   ├── README.md
+│   ├── run_stage.sh
+│   ├── setup_vnc_password.sh
+│   ├── setup_vnc_service.sh
+│   ├── uninstall_stage_1.sh
+│
+├── stage_2_system_setup/
+│   ├── check_service_status.sh
+│   ├── config.env
+│   ├── install_cuda.sh
+│   ├── install_cudnn.sh
+│   ├── install_python.sh
+│   ├── install_stage_2.sh
+│   ├── manage_services_stage_2.sh
+│   ├── README.md
+│   ├── run_stage.sh
+│   ├── uninstall_stage_2.sh
+│
+├── stage_3_dev_tools/
+│   ├── check_service_status.sh
+│   ├── config.env
+│   ├── install_docker.sh
+│   ├── install_git.sh
+│   ├── install_jupyter.sh
+│   ├── install_ray.sh
+│   ├── install_stage_3.sh
+│   ├── manage_services_stage_3.sh
+│   ├── README.md
+│   ├── run_stage.sh
+│   ├── uninstall_stage_3.sh
+│
+└── utils/
+    ├── reboot_if_needed.sh
+    └── main.sh
 ```
 
-### 2. Update the configuration file:
+## Configuration
 
-Edit the `config.env` file to match your system's requirements. Set `true` or `false` to enable or disable certain installations. For example:
+Each stage has a `config.env` file that controls the behavior of the scripts. Make sure to configure these files according to your system requirements before running the scripts.
+
+### Example Configuration for `config.env`
 
 ```ini
-PYTHON_INSTALL=true
-PYTHON_VERSION="3.11"
-DOCKER_INSTALL=true
-RAY_INSTALL=true
+# Stage 1: Remote Access Configuration
+RDP_ENABLE=true
+VNC_ENABLE=false
+WINDOW_MANAGER="xfce"
+
+# Stage 2: System Setup
+NVIDIA_DRIVER_ENABLE=true
+NVIDIA_DRIVER_VERSION=525
+CUDA_ENABLE=true
+CUDA_VERSION=12-6
+CUDA_DISTRIBUTION=ubuntu2404
+CUDA_ARCH=x86_64
+CUDNN_ENABLE=true
+PYTHON_ENABLE=true
+PYTHON_VERSION=3.11.9
+
+# Stage 3: Development Tools Setup
+GIT_ENABLE=true
+DOCKER_ENABLE=true
+JUPYTER_ENABLE=true
+JUPYTER_PORT=8888
+RAY_ENABLE=true
 ```
 
-### 3. Run the setup script:
+## Stages Overview
+
+### Stage 1: Remote Access Configuration
+
+This stage sets up remote access to the Linux machine, including RDP and VNC services. It allows you to configure different desktop environments and manage remote access services.
+
+- **Key Features:**
+  - Install and configure RDP (`xrdp`) with various desktop environments.
+  - Install and configure VNC (`tightvncserver`).
+  - Set up a firewall for secure access.
+  - Manage remote access services and check their status.
+
+### Stage 2: System Setup
+
+This stage focuses on setting up GPU drivers, CUDA, cuDNN, and Python. It ensures that the machine is ready for GPU-accelerated tasks.
+
+- **Key Features:**
+  - Install NVIDIA GPU drivers.
+  - Install CUDA toolkit and ensure `nvcc` is available.
+  - Install cuDNN library for deep learning.
+  - Install a specified version of Python globally and set it as the default interpreter.
+
+### Stage 3: Development Tools Setup
+
+This stage sets up various development tools and environments necessary for machine learning and data science workflows, including Git, Docker, Jupyter, and Ray.
+
+- **Key Features:**
+  - Install and configure Git for version control.
+  - Install Docker and configure it for containerized workflows.
+  - Install Jupyter Notebook/Lab and configure it to run on a specific port.
+  - Install Ray for distributed computing.
+
+## How to Use
+
+### Running a Specific Stage
+
+Each stage has a `run_stage.sh` script that executes the installation and configuration steps for that stage.
+
+1. **Make the Script Executable:**
+
+   ```bash
+   chmod +x run_stage.sh
+   ```
+
+2. **Run the Script:**
+
+   ```bash
+   ./run_stage.sh
+   ```
+
+This will execute all the necessary steps to set up the components for that stage based on the `config.env` configuration.
+
+### Checking Service Status
+
+After running the installation scripts, you can check the status of installed services by running the `check_service_status.sh` script in each stage's directory:
 
 ```bash
-chmod +x setup.sh
-./setup.sh
+./check_service_status.sh
 ```
 
-The script will automatically install and configure the specified software and services according to the settings in the `config.env` file.
+This script provides feedback on the status of key services and verifies the installed versions of critical components like Python and CUDA.
 
-## Features
+## Uninstallation
 
-- **Python Setup**: Installs a specific version of Python globally.
-- **CUDA and cuDNN**: Installs NVIDIA CUDA Toolkit and cuDNN libraries.
-- **Jupyter Notebook**: Installs and configures Jupyter Notebook.
-- **Samba**: Sets up file sharing using Samba.
-- **SSH and SFTP**: Installs and configures SSH and optional SFTP.
-- **VNC and RDP**: Sets up remote desktop access via VNC and RDP.
-- **Docker**: Installs Docker and Docker Compose.
-- **Ray**: Installs Ray for parallel and distributed computing.
-- **Firewall**: Configures UFW to allow specified ports.
+To remove the installed components, each stage provides an `uninstall_stage.sh` script. Running this script will safely remove the components installed during that stage.
 
-## Customization
+```bash
+./uninstall_stage.sh
+```
 
-You can customize the installation by editing the `config.env` file. Here is a brief overview of the options:
+## Service Management
 
-- `PYTHON_INSTALL`: Set to `true` to install Python globally.
-- `CUDA_INSTALL`: Set to `true` to install CUDA.
-- `DOCKER_INSTALL`: Set to `true` to install Docker.
-- `RAY_INSTALL`: Set to `true` to install Ray.
-- And many more...
+Service management scripts allow you to start, stop, and restart services related to each stage. These scripts ensure that your system's services are running as expected after configuration.
 
-Refer to the comments in the `config.env` file for detailed explanations of each option.
+- **Manage services for Stage 1:**
 
-## License
+  ```bash
+  ./manage_services.sh
+  ```
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+- **Manage services for Stage 2:**
 
-## Contributing
+  ```bash
+  ./manage_services_stage_2.sh
+  ```
 
-Feel free to submit issues and pull requests. Contributions are welcome!
+- **Manage services for Stage 3:**
+
+  ```bash
+  ./manage_services_stage_3.sh
+  ```
+
+## Reboot Management
+
+The `utils/` folder contains a script for managing reboots if needed.
+
+- **Reboot the system if needed:**
+
+  ```bash
+  ./utils/reboot_if_needed.sh
+  ```
+
+## Conclusion
+
+This project provides a structured and automated approach to setting up a Linux machine for GPU-intensive tasks. By breaking down the configuration into stages, it offers flexibility and modularity, allowing you to configure only the components you need. Ensure that you configure each `config.env` file according to your requirements before running the scripts.
