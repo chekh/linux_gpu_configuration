@@ -9,6 +9,15 @@ set +a
 if [ "$CUDA_INSTALL" == "true" ]; then
   echo "Installing CUDA $CUDA_VERSION on Ubuntu $TARGET_VERSION..."
 
+  # Install Nvidia drivers
+  sudo apt-get install nvidia-open
+
+  # Prepare Ubuntu repository
+  sudo apt-get install linux-headers-$(uname -r)
+
+  # Remove outdated signing key
+  sudo apt-key del 7fa2af80
+
   # Download the CUDA keyring package
   wget https://developer.download.nvidia.com/compute/cuda/repos/$DISTRO/$TARGET_ARCH/cuda-keyring_1.1-1_all.deb
 
