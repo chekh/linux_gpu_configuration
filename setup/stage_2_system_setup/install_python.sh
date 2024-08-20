@@ -9,7 +9,22 @@ set +a
 install_python() {
     echo "Installing Python $PYTHON_VERSION globally..."
     sudo apt-get update
-    sudo apt-get install -y wget build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev
+
+    sudo apt-get install -y \
+        wget \
+        build-essential \
+        zlib1g-dev \
+        libncurses5-dev \
+        libgdbm-dev \
+        libnss3-dev \
+        libssl-dev \
+        libreadline-dev \
+        libffi-dev \
+        libbz2-dev \
+        liblzma-dev \
+        libsqlite3-dev \
+        libzlib-dev \
+        libgdbm-compat-dev
 
     # Download and extract Python source code
     wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
@@ -17,15 +32,15 @@ install_python() {
 
     # Build and install Python globally
     cd Python-$PYTHON_VERSION
-    ./configure --enable-optimizations --prefix=/usr/local
-    make -j$(nproc)
+    ./configure --enable-optimizations --enable-shared --with-lzma --with-bz2 --with-zlib --prefix=/usr/local
+    make -j $(nproc)
     sudo make altinstall
 
     # Clean up build artifacts and source files
     cd ..
-    sudo rm -rf Python-$PYTHON_VERSION
     sudo rm -rf .*
     sudo rm Python-$PYTHON_VERSION.tgz
+    sudo rm -rf Python-$PYTHON_VERSION
 
     # Update alternatives to set this version as the default python3 and python
     sudo update-alternatives --install /usr/bin/python python /usr/local/bin/python${PYTHON_VERSION%.*} 1
