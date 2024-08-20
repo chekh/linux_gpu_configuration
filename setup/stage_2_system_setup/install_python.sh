@@ -11,20 +11,21 @@ install_python() {
     sudo apt-get update
 
     sudo apt-get install -y \
-        wget \
-        build-essential \
-        zlib1g-dev \
-        libncurses5-dev \
-        libgdbm-dev \
-        libnss3-dev \
-        libssl-dev \
-        libreadline-dev \
-        libffi-dev \
         libbz2-dev \
         liblzma-dev \
         libsqlite3-dev \
-        libzlib-dev \
-        libgdbm-compat-dev
+        libssl-dev \
+        libreadline-dev \
+        libgdbm-dev \
+        libgdbm-compat-dev \
+        libncurses5-dev \
+        libffi-dev \
+        zlib1g-dev \
+        uuid-dev \
+        tk-dev \
+        libnss3-dev \
+        libdb-dev
+
 
     # Download and extract Python source code
     wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
@@ -32,15 +33,14 @@ install_python() {
 
     # Build and install Python globally
     cd Python-$PYTHON_VERSION
-    ./configure --enable-optimizations --enable-shared --with-lzma --with-bz2 --with-zlib --prefix=/usr/local
+    make clean
+    ./configure --enable-optimizations --with-lzma --with-bz2 --with-zlib --prefix=/usr/local
     make -j $(nproc)
     sudo make altinstall
 
     # Clean up build artifacts and source files
     cd ..
-    sudo rm -rf .*
-    sudo rm Python-$PYTHON_VERSION.tgz
-    sudo rm -rf Python-$PYTHON_VERSION
+    rm -rf Python-$PYTHON_VERSION.tgz Python-$PYTHON_VERSION
 
     # Update alternatives to set this version as the default python3 and python
     sudo update-alternatives --install /usr/bin/python python /usr/local/bin/python${PYTHON_VERSION%.*} 1
@@ -55,8 +55,8 @@ install_python() {
     sudo /usr/local/bin/python${PYTHON_VERSION%.*} -m pip install --upgrade pip
 
     # Verify the installation
-    python --version
-    python3 --version
+    /usr/local/bin/python${PYTHON_VERSION%.*} --version
+    /usr/local/bin/python${PYTHON_VERSION%.*} -m pip --version
 }
 
 # Check if Python installation is enabled in the config
