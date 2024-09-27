@@ -117,6 +117,8 @@ This stage sets up remote access to the Linux machine, including RDP and VNC ser
   - Set up a firewall for secure access.
   - Manage remote access services and check their status.
 
+[Readme](./README_STAGE_1.md)
+
 ### Stage 2: System Setup
 
 This stage focuses on setting up GPU drivers, CUDA, cuDNN, and Python. It ensures that the machine is ready for GPU-accelerated tasks.
@@ -127,6 +129,9 @@ This stage focuses on setting up GPU drivers, CUDA, cuDNN, and Python. It ensure
   - Install cuDNN library for deep learning.
   - Install a specified version of Python globally and set it as the default interpreter.
 
+[Readme](./README_STAGE_2.md)
+
+
 ### Stage 3: Development Tools Setup
 
 This stage sets up various development tools and environments necessary for machine learning and data science workflows, including Git, Docker, Jupyter, and Ray.
@@ -136,6 +141,9 @@ This stage sets up various development tools and environments necessary for mach
   - Install Docker and configure it for containerized workflows.
   - Install Jupyter Notebook/Lab and configure it to run on a specific port.
   - Install Ray for distributed computing.
+
+[Readme](./README_STAGE_3.md)
+
 
 ## How to Use
 
